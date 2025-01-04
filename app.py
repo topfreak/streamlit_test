@@ -1,5 +1,6 @@
 import numpy as np
 import streamlit as st
+import matplotlib.pyplot as plt
 
 # Metode Trapezoidal Rule
 def trapezoidal_rule(x, y):
@@ -30,7 +31,7 @@ def simpson_one_third_rule(x, y):
     return integral
 
 # Judul aplikasi
-st.title("Metode Integrasi Numerik")
+st.title("Metode Integrasi Numerik dengan Visualisasi")
 
 # Pilihan metode integrasi
 st.subheader("Pilih metode integrasi")
@@ -90,6 +91,17 @@ else:
                                 result = simpson_one_third_rule(x_array, y_array)
 
                             st.success(f"Integral menggunakan metode {option_map[selection]} adalah: {result}")
+
+                            # Membuat grafik
+                            st.subheader("Visualisasi Data")
+                            fig, ax = plt.subplots()
+                            ax.plot(x_array, y_array, '-o', label="Fungsi Interpolasi")
+                            ax.fill_between(x_array, 0, y_array, alpha=0.3, label="Area")
+                            ax.set_xlabel("x")
+                            ax.set_ylabel("f(x)")
+                            ax.legend()
+                            st.pyplot(fig)
+
                         except ValueError as e:
                             st.error(f"Error: {e}")
                     else:
