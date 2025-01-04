@@ -59,7 +59,7 @@ else:
 
         if num_points:
             if selection == 2 and num_points % 2 == 0:
-                st.error("Jumlah titik harus menghasilkan subinterval ganjil untuk metode Simpson 1/3.")
+                st.error("Jumlah titik harus ganjil untuk Simpson 1/3 Rule!")
             else:
                 # Input nilai x dan y secara manual
                 st.subheader("Masukkan nilai x dan y")
