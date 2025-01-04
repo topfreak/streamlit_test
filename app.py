@@ -53,9 +53,9 @@ else:
     st.write(f"Metode yang dipilih: {option_map[selection]}")
 
     # Input jumlah titik
-    st.subheader("Tentukan jumlah nilai x dan y")
+    st.subheader("Tentukan jumlah titik pembagi")
     try:
-        num_points = st.number_input("Masukkan jumlah nilai x dan y:", min_value=2, step=1, value=4)
+        num_points = st.number_input("Masukkan jumlah titik pembagi:", min_value=2, step=1, value=4)
 
         if num_points:
             if selection == 2 and num_points % 2 == 0:
