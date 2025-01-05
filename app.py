@@ -1,6 +1,6 @@
 import numpy as np
 import streamlit as st
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 # Metode Trapezoidal Rule
 def trapezoidal_rule(x, y):
@@ -30,8 +30,45 @@ def simpson_one_third_rule(x, y):
     integral *= (x[1] - x[0]) / 3
     return integral
 
+# Fungsi untuk membuat grafik menggunakan Plotly
+def plot_integration(x, y, method):
+    fig = go.Figure()
+
+    # Kurva utama
+    x_curve = np.linspace(x[0], x[-1], 500)
+    y_curve = np.interp(x_curve, x, y)
+    fig.add_trace(go.Scatter(x=x_curve, y=y_curve, mode='lines', name='f(x)', line=dict(color='blue')))
+
+    # Area di bawah kurva (berdasarkan metode integrasi)
+    for i in range(len(x) - 1):
+        if method == "Trapezoidal Rule":
+            x_fill = [x[i], x[i], x[i+1], x[i+1], x[i]]
+            y_fill = [0, y[i], y[i+1], 0, 0]
+        elif method == "Midpoint Rule":
+            midpoint = (x[i] + x[i+1]) / 2
+            x_fill = [x[i], x[i], x[i+1], x[i+1], x[i]]
+            y_fill = [0, np.interp(midpoint, x, y), np.interp(midpoint, x, y), 0, 0]
+        elif method == "Simpson 1/3 Rule":
+            x_fill = [x[i], x[i], x[i+1], x[i+1], x[i]]
+            y_fill = [0, y[i], y[i+1], 0, 0]
+        
+        fig.add_trace(go.Scatter(
+            x=x_fill, y=y_fill, fill='toself', mode='lines', line=dict(color='rgba(0,0,0,0)'),
+            fillcolor='rgba(0,176,246,0.4)', name=f'Subinterval {i+1}'
+        ))
+
+    # Tata letak grafik
+    fig.update_layout(
+        title=f"Visualisasi Metode {method}",
+        xaxis_title="x",
+        yaxis_title="f(x)",
+        showlegend=True
+    )
+
+    return fig
+
 # Judul aplikasi
-st.title("Metode Integrasi Numerik dengan Visualisasi")
+st.title("Metode Integrasi Numerik")
 
 # Pilihan metode integrasi
 st.subheader("Pilih metode integrasi")
@@ -91,17 +128,10 @@ else:
                                 result = simpson_one_third_rule(x_array, y_array)
 
                             st.success(f"Integral menggunakan metode {option_map[selection]} adalah: {result}")
-
-                            # Membuat grafik
-                            st.subheader("Visualisasi Data")
-                            fig, ax = plt.subplots()
-                            ax.plot(x_array, y_array, '-o', label="Fungsi Interpolasi")
-                            ax.fill_between(x_array, 0, y_array, alpha=0.3, label="Area")
-                            ax.set_xlabel("x")
-                            ax.set_ylabel("f(x)")
-                            ax.legend()
-                            st.pyplot(fig)
-
+                            
+                            # Tampilkan grafik
+                            fig = plot_integration(x_array, y_array, option_map[selection])
+                            st.plotly_chart(fig)
                         except ValueError as e:
                             st.error(f"Error: {e}")
                     else:
